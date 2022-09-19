@@ -32,7 +32,7 @@ app.get("/generatepdf/:id", async (req, res) => {
     return;
   }
   const docname = nanoid();
-  const uri = path.join(docname + ".pdf");
+  const uri = path.join("./generated/" + docname + ".pdf");
 
   const pdfdoc = await PDFDocument.load(pdfBytes);
   const form = pdfdoc.getForm();
