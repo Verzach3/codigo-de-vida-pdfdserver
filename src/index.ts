@@ -77,6 +77,4 @@ app.get("/generatepdf/:id", async (req, res) => {
   console.log(req.params.id);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+app.listen(port, "10.2.0.4");
