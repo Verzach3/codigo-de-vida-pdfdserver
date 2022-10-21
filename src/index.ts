@@ -1,12 +1,10 @@
 import "isomorphic-fetch";
 import express from "express";
-import pocketbaseEs, { ClientResponseError } from "pocketbase";
+import pocketbaseEs from "pocketbase";
 import * as dotenv from "dotenv";
-import { nanoid } from "nanoid";
 import path from "path";
 import { PDFDocument } from "pdf-lib";
-import { document } from "./PDFDocument.js";
-import { readFile, rm, stat, writeFile } from "fs/promises";
+import { readFile, rm, writeFile } from "fs/promises";
 dotenv.config();
 const client = new pocketbaseEs(process.env.BACKEND_URL);
 await client.users.authViaEmail(
@@ -21,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 console.log(process.env.BACKEND_URL);
-app.get("/generatepdf/:id", async (req, res) => {
+app.get("*/:id", async (req, res) => {
   let response = undefined;
   try {
     response = await client.records.getOne("pacientes", req.params.id);
@@ -31,7 +29,7 @@ app.get("/generatepdf/:id", async (req, res) => {
     res.json(error);
     return;
   }
-  const docname = nanoid();
+  const docname = `Informe-${response.nombres}-${response.apellidos}-${response.cedula}`;
   const uri = path.join("./generated/" + docname + ".pdf");
 
   const pdfdoc = await PDFDocument.load(pdfBytes);
@@ -77,4 +75,4 @@ app.get("/generatepdf/:id", async (req, res) => {
   console.log(req.params.id);
 });
 
-app.listen(port, "10.2.0.4");
+app.listen(port, "127.0.0.1");
