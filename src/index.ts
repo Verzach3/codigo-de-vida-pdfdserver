@@ -75,7 +75,7 @@ app.get("*/:id", async (req, res) => {
   console.log(req.params.id);
 });
 
-app.get("*/logs/:page", async (req, res) => {
+app.get("/logs/:page", async (req, res) => {
   let response = undefined;
   const pageNum = isNaN(parseInt(req.params.page))
     ? 1
