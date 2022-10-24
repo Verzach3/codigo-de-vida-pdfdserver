@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 });
 
 console.log(process.env.BACKEND_URL);
-app.get("*/:id", async (req, res) => {
+app.get("generate/:id", async (req, res) => {
   let response = undefined;
   try {
     response = await client.records.getOne("pacientes", req.params.id);
@@ -75,7 +75,7 @@ app.get("*/:id", async (req, res) => {
   console.log(req.params.id);
 });
 
-app.get("/logs/:page", async (req, res) => {
+app.get("logs/:page", async (req, res) => {
   let response = undefined;
   const pageNum = isNaN(parseInt(req.params.page))
     ? 1
