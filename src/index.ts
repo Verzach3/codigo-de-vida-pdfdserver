@@ -11,7 +11,8 @@ await client.users.authViaEmail(
   process.env.BACKEND_USERNAME || "",
   process.env.BACKEND_PASSWORD || ""
 );
-const pdfBytes = await readFile("./res/formulario-codigo-de-vida.pdf");
+const pdfBytesPatient = await readFile("./res/formulario-codigo-de-vida.pdf");
+const pdfBytesLogs = await readFile("./res/logs-final.pdf");
 const app = express();
 const port = 3000;
 app.get("/", (req, res) => {
@@ -32,7 +33,7 @@ app.get("*/:id", async (req, res) => {
   const docname = `Informe-${response.nombres}-${response.apellidos}-${response.cedula}`;
   const uri = path.join("./generated/" + docname + ".pdf");
 
-  const pdfdoc = await PDFDocument.load(pdfBytes);
+  const pdfdoc = await PDFDocument.load(pdfBytesPatient);
   const form = pdfdoc.getForm();
 
   //Form fields
@@ -71,8 +72,41 @@ app.get("*/:id", async (req, res) => {
     rm(uri).catch(console.log);
   });
 
-  // res.send(req.params.id);
   console.log(req.params.id);
+});
+
+app.get("*/logs/:page", async (req, res) => {
+  let response = undefined;
+  const pageNum = isNaN(parseInt(req.params.page))
+    ? 1
+    : parseInt(req.params.page);
+  try {
+    response = await client.records.getList("registros", pageNum);
+    console.log(response);
+  } catch (error) {
+    res.json(error);
+    return;
+  }
+  const docname = `Logs-${Date.now()}`;
+  const uri = path.join("./generated/" + docname + ".pdf");
+
+  const pdfdoc = await PDFDocument.load(pdfBytesLogs);
+  const form = pdfdoc.getForm();
+
+  //Form fields
+  const logsField = form.getTextField("logs");
+  let logs = "";
+  response.items.forEach((record) => {
+    logs += `${record.email_usuario} - ${record.cedula_paciente} - ${record.created} - ${record.desde}
+`;
+  });
+  logsField.setText(logs);
+
+  const exportedPDF = await pdfdoc.save();
+  await writeFile(uri, exportedPDF);
+  res.download(uri, async () => {
+    rm(uri).catch(console.log);
+  });
 });
 
 app.listen(port, "127.0.0.1");
