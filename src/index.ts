@@ -7,7 +7,7 @@ import { PDFDocument } from "pdf-lib";
 import { readFile, rm, writeFile } from "fs/promises";
 dotenv.config();
 const client = new pocketbaseEs(process.env.BACKEND_URL);
-await client.users.authViaEmail(
+await client.admins.authViaEmail(
   process.env.BACKEND_USERNAME || "",
   process.env.BACKEND_PASSWORD || ""
 );
