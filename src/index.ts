@@ -94,13 +94,28 @@ app.get("/logs/:page", async (req, res) => {
   const form = pdfdoc.getForm();
 
   //Form fields
-  const logsField = form.getTextField("logs");
-  let logs = "";
+  const emailField = form.getTextField("email");
+  const cedulaField = form.getTextField("cedula");
+  const createdField = form.getTextField("created");
+  const desdeField = form.getTextField("desde");
+  let email = "";
+  let cedula = "";
+  let created = "";
+  let desde = "";
   response.items.forEach((record) => {
-    logs += `${record.email_usuario}      ${record.cedula_paciente}     ${record.created}     ${record.desde}
-`;
+    email += `${record.email}
+    `;
+    cedula += `${record.cedula}
+    `;
+    created += `${record.created}
+    `;
+    desde += `${record.desde}
+    `;
   });
-  logsField.setText(logs);
+  emailField.setText(email);
+  cedulaField.setText(cedula);
+  createdField.setText(created);
+  desdeField.setText(desde);
 
   const exportedPDF = await pdfdoc.save();
   await writeFile(uri, exportedPDF);
