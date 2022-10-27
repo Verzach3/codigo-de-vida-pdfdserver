@@ -103,9 +103,9 @@ app.get("/logs/:page", async (req, res) => {
   let created = "";
   let desde = "";
   response.items.forEach((record) => {
-    email += `${record.email}
+    email += `${record.email_usuario}
 `;
-    cedula += `${record.cedula}
+    cedula += `${record.cedula_paciente}
 `;
     created += `${record.created}
 `;
