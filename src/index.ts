@@ -97,7 +97,7 @@ app.get("/logs/:page", async (req, res) => {
   const logsField = form.getTextField("logs");
   let logs = "";
   response.items.forEach((record) => {
-    logs += `${record.email_usuario} - ${record.cedula_paciente} - ${record.created} - ${record.desde}
+    logs += `${record.email_usuario}      ${record.cedula_paciente}     ${record.created}     ${record.desde}
 `;
   });
   logsField.setText(logs);
