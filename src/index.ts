@@ -104,13 +104,13 @@ app.get("/logs/:page", async (req, res) => {
   let desde = "";
   response.items.forEach((record) => {
     email += `${record.email}
-    `;
+`;
     cedula += `${record.cedula}
-    `;
+`;
     created += `${record.created}
-    `;
+`;
     desde += `${record.desde}
-    `;
+`;
   });
   emailField.setText(email);
   cedulaField.setText(cedula);
