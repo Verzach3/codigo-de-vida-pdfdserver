@@ -3,7 +3,10 @@ import { readFile, rm, writeFile } from "fs/promises";
 import { join } from "path";
 import { PDFDocument } from "pdf-lib";
 
-export async function makeLogsPDf(response: any, res?: Response) {
+export async function makeLogsPDf(
+  response: any,
+  res?: Response
+): Promise<string | undefined> {
   const pdfBytesLogs = await readFile("./res/logs-final.pdf");
   const docname = `Logs-${Date.now()}`;
   const uri = join("./generated/" + docname + ".pdf");

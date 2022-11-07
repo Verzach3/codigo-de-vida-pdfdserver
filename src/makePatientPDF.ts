@@ -1,13 +1,14 @@
-import { Record } from "pocketbase";
-import path from "path";
+import { join } from "path";
 import { PDFDocument } from "pdf-lib";
-import { rm, writeFile } from "fs/promises";
-import { Response } from "express-serve-static-core";
-import { pdfBytesPatient } from "./index.js";
+import { readFile, rm, writeFile } from "fs/promises";
+import { Response } from "express";
 
-export async function makePatientPDF(response: Record, res: Response) {
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export default async function makePatientPDF(response: any, res?: Response) {
+  const pdfBytesPatient = await readFile("./res/formulario-codigo-de-vida.pdf");
   const docname = `Informe-${response.nombres}-${response.apellidos}-${response.cedula}`;
-  const uri = path.join("./generated/" + docname + ".pdf");
+  const uri = join("./generated/" + docname + ".pdf");
 
   const pdfdoc = await PDFDocument.load(pdfBytesPatient);
   const form = pdfdoc.getForm();
@@ -42,9 +43,13 @@ export async function makePatientPDF(response: Record, res: Response) {
   direccion_acudienteField.setText(response.direccion_acudiente);
 
   const exportedPDF = await pdfdoc.save();
-  // res.setHeader('Content-Type', 'application/pdf');
   await writeFile(uri, exportedPDF);
-  res.download(uri, async () => {
-    rm(uri).catch(console.log);
-  });
+  if (res !== undefined) {
+    res.download(uri, async () => {
+      rm(uri).catch(console.log);
+    });
+  }
+  if (res === undefined) {
+    return uri;
+  }
 }
