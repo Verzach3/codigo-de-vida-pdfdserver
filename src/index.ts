@@ -4,7 +4,7 @@ import pocketbaseEs from "pocketbase";
 import * as dotenv from "dotenv";
 import { readFile } from "fs/promises";
 import { makeLogsPDf } from "./makeLogsPDF.js";
-import { makePatientPDF } from "./makePatientPDF.js";
+import makePatientPDF from "./makePatientPDF.js";
 dotenv.config();
 const client = new pocketbaseEs(process.env.BACKEND_URL);
 await client.admins.authViaEmail(
@@ -40,7 +40,9 @@ app.get("/logs/:page", async (req, res) => {
     ? 1
     : parseInt(req.params.page);
   try {
-    response = await client.records.getList("registros", pageNum);
+    response = await client.records.getList("registros", pageNum, undefined, {
+      order: "-created",
+    });
     console.log(response);
   } catch (error) {
     res.json(error);
